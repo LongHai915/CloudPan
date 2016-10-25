@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<meta name="description" content="Cloud Pan" />
+		<meta name="author" content="SHIHL" />
+		<title>Cloud Pan - All Documents</title>
+		<link rel="stylesheet" href="../css/bootstrap.min.css" />
+		<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+		<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="../css/main.css" />
+		<script type="text/javascript" src="../js/main2.js"></script>
+		<style type="text/css">
+			
+		</style>
+	</head>
+
+	<body style="overflow:scroll;overflow-y:hidden">
+		<div class="headDiv">
+			<div class="container-fluid">
+				<div class="row-fluid">
+					<div class="span12">
+						<div class="span3">Cloud Pan</div>
+						<div class="span7">&nbsp;</div>
+						<div class="span2">User Info</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="container">
+			<div class="row">
+				<div class="span3">
+					<div class="fmenu"><a href="#">全部文件</a></div>
+					<ul class="fmenu"> 
+						<li><a href="#">文档</a></li>
+						<li><a href="#">图片</a></li>
+						<li><a href="#">视频</a></li>
+						<li><a href="#">音乐</a></li>
+						<li><a href="#">其他</a></li>
+					</ul>
+					<div class="fmenu"><a href="#">我的分享</a></div>
+					<div class="fmenu"><a href="#">回收站</a></div>
+				</div>
+				<div class="mainDiv">
+					<div class="container-fluid">
+						<div class="row-fluid">
+							<div class="span2">
+								<input type="file" id="file" name="upFile" hidden="true" />
+								<input type="button" id="uploadBtn" class="btn btn-block btn-primary" value="Upload File" />
+							</div>
+							<div class="span10">
+								<!--进度条标签-->
+							    <progress value="0" max="100" id="progress" style="height: 20px; width: 100%" hidden="true"></progress>
+							    <!--div模拟进度条-->
+							    <!-- <div id="progressNumber" style="width: 0%; height: 20px; background-color: Red"></div>-->
+							</div>
+						</div>
+					</div>
+					<div class="container-fluid">
+						<div class="row-fluid">
+							<div class="span2">
+								<small>全部文件</small>
+							</div>
+							<div class="span10" style="text-align: right;">
+								<small>已全部加载，共xx文件</small>
+							</div>
+						</div>
+					</div>
+					<div class="container-fluid" style="color: gray;">
+						<div class="row-fluid">
+							<div class="span10">
+								<small>文件名</small>
+							</div>
+							<div class="span1">
+								<small>大小</small>
+							</div>
+							<div class="span1">
+								<small>修改日期</small>
+							</div>
+						</div>
+					</div>
+					<div class="container-fluid list-row">
+							
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
