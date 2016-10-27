@@ -1,7 +1,7 @@
 <?php
-	include_once("serverinfo.php");
+include_once("serverinfo.php");
 	ignore_user_abort (false);//脚本结束后，自动删除mysql连接
-  	$act=$_GET['act'];
+	$act=$_GET['act'];
 	
 	if('login' == $act){
 		$ret = loginFunc();
@@ -16,42 +16,48 @@
 		$password = $_GET['kval'];	
 
 		try {
-			$dbc = new DBConn($dsn, $db_user, $db_pass); 
-			$db = $dbc->getConnection();
-			$sql = 'select uname, password from users where (uname=? or uemail=?) and password=?;';
+			$db = new PDO(db_dsn, db_user, db_pass);
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); //禁用prepared statements的仿真效果，达到防止注入目的
+			$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
+
+			$sql = "select uname, password from t_user where (uname=? or uemail=?) and password=?;";
 			$stmt = $db->prepare($sql);
 			$param = array($email, $email, $password);
-			$excr = $stmt->execute($param);
-			if(!$excr){
+			$res = $stmt->execute($param);
+
+			if(!$res){
+				$ret['code']=2;
 				$ret['msg'] = $db->errorInfo();
-			}
-			else if($exec){
-				if($db->rowCount() == 0){
-					$ret['code']=2;
-					$ret['msg']='this account/email does not exists';
-				}
-				else if($db->rowCount() == 1){
-					$row = $stmt->fetch(FETCH_ASSOC);
-					if($row['password'] != $password){
-						$ret['code']=3;
-						$ret['msg']='password is error, please re-input';
-					}
-					else{
-						$ret['code']=1;
-						session_start();
-						$_SESSION['user'] = $row['uname'];
-						$ret['msg']='login success';
-						$ret['url']='/html/main.html';
-						mysql_query("update users set lastLoginTime=now() where uname={$email} or uemail={$email};");
-					}
-				}
-			}
-			return $ret;
-		} 
-		catch (PDOException $e) {
-		    $ret['msg'] = $e->getMessage();
-		    return $ret;
-	  	}
+	        	}
+	        	else if($res){
+	        		$row = $stmt->fetch(PDO::FETCH_ASSOC);
+	        	if(!$row){
+	        		$ret['code']=0;
+	        		$ret['msg']='this account/email does not exists';
+	        	}
+	        	else if($row['password'] != $password){
+	        		$ret['code']=0;
+	        		$ret['msg']='password is error, please re-input';
+	        	}
+	        	else{
+	        		$ret['code']=1;
+	        		session_start();
+	        		$_SESSION['user'] = $row['uname'];
+	        		$ret['msg']='login success';
+	        		$ret['url']='html/main.html';
+	        		$sql = "update t_user set lastLoginTime=now() where uname='{$email}' or uemail='{$email}';";
+	        		$db->exec($sql);
+	        	}
+	        }
+	        return $ret;
+	    } 
+	    catch (PDOException $e) {
+	    	$ret['code']=3;
+	    	$ret['msg'] = $e->getMessage();
+	    	$ret['url'] = '';
+	    	return $ret;
+	    }
 	}
 
 	function logoutFunc(){
@@ -59,4 +65,4 @@
 		$ret = array('code'=>1, 'msg'=>"logout success", 'url'=>'/index.php');
 		echo json_encode($ret);
 	}
- ?>
+	?>
