@@ -32,25 +32,36 @@ window.onload = function(){
 		}
 		islogin = true;
 		var url = 'act/login.php';
-		url = url +'?act=login';
-		url = url + '&kid=' + name.value.trim() + '&kval=' + passwd.value.trim();
-		xmlHttp.open('GET', url, true);
+		var list = {};
+		list['act'] = 'login';
+		list['kid'] = name.value.trim();
+		list['kval'] = passwd.value.trim();
+		var param = 'param='+JSON.stringify(list);
+		xmlHttp.open('POST', url, true);
+		//post请求时才需要下面的代码
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8"); 
 		xmlHttp.onreadystatechange = function(){
 			if(xmlHttp.readyState==4 && xmlHttp.status==200){
 				res = xmlHttp.responseText;
+				//errmsg.innerText = xmlHttp.responseText;
 				res = eval('('+res+')');
-				if(res['code']==1){
-					window.location = res['url'];
+				if(res['code']===0){
+					errmsg.innerText = res['msg'];
 				}
 				else{
-					errmsg.innerText = res['msg'];
+					document.cookie = "uname="+ escape(name.value.trim());
+					document.cookie = "ukey=" + escape(res['code']);
+					window.location = res['url'];
+					//var date = new Date();
+					//date.setTime(date.getTime() +  10*60*1000);
+					//document.cookie = "uname=" + escape(name.value.trim())+";expires="+date.toGMTString();	
 				}
 			}
 			else if(xmlHttp.status==404){
 				errmsg.innerText = 'login failed: network problem';
 			}
 		}
-		xmlHttp.send();
+		xmlHttp.send(param);
 	}
 	var registerFun = function (event) {
 		//alert("register function");

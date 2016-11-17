@@ -12,5 +12,5 @@ create table users(
 
 alter table users rename t_users;
 
-alter table users CHANGE COLUMN name uname varchar(30);
-alter table users CHANGE COLUMN email uemail varchar(50);
+alter table t_users CHANGE COLUMN name uname varchar(30);
+alter table t_users CHANGE COLUMN email uemail varchar(50);

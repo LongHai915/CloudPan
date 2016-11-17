@@ -1,4 +1,15 @@
 window.onload = function(){
+	var cooklst = document.cookie;
+	var cooks = cooklst.split(";");
+	for(var i=0; i<cooks.length; i++){
+		var arr = cooks[i].split('=');
+		if('uname' == arr[0] 
+			&& arr[1].length!=0){
+			window.location = "html/main.html";
+			break;
+		}
+	}
+	
 	var xmlHttp;
 	if(window.XMLHttpRequest){
 		//code for IE7+, Firefox, Chrome, Safari, Opera
@@ -15,10 +26,11 @@ window.onload = function(){
 	var registerctl=document.getElementById('registerBtn');
 	
 	var url= 'act/register.php';
+	var uname = null;
 	var pname = null;
-	var email = null;
-	var passwd = null;
-	var rpasswd = null;
+	var uemail = null;
+	var upwd = null;
+	var upwdr = null;
 	var isNmExists = false;
 	var isNmChk = false;
 	var emailChk = function (event){
@@ -70,7 +82,7 @@ window.onload = function(){
 	}
 	
 	var registerFunc = function (event) {
-		var uname = unamectl.value.trim();
+		uname = unamectl.value.trim();
 		var res=""; 
 		if(uname.length == 0){
 			errmsg.innerText = "please input user name";
@@ -90,13 +102,21 @@ window.onload = function(){
 		else if(!pwdChk())
 			return;
 		
-		var purl = url+'?act=reg&knm='+uname+'&kem='+uemail+'&kpw='+upwd;
-		xmlHttp.open('GET', purl, true);
+		xmlHttp.open('POST', url, true);
+		//post请求时才需要下面的代码
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8"); 
+		var list={};
+		list['act'] = 'reg';
+		list['knm'] = uname;
+		list['kem'] = uemail;
+		list['kpw'] = upwd;
+		var param ='param='+JSON.stringify(list);
 		xmlHttp.onreadystatechange = function(){
 			if(xmlHttp.readyState==4 && xmlHttp.status==200){
 				res = xmlHttp.responseText;
 				res = eval('('+res+')');
-				if(res['code']==1){
+				
+				if(res['code']===1){
 					confirm("please sign in.");
 					window.location = res['url'];
 				}
@@ -108,7 +128,7 @@ window.onload = function(){
 				errmsg.innerText = 'register failed: network problem';
 			}
 		}
-		xmlHttp.send();
+		xmlHttp.send(param);
 	}
 	
 	var chkExistsFunc = function (event) {
@@ -119,10 +139,14 @@ window.onload = function(){
 			return;
 		else if(uname == pname)//no modify, no check
 			return;
-		var purl = url + "?act=chkun&kval=" + uname;
-		xmlHttp.open('GET', purl, true);
+	
+		xmlHttp.open('POST', url, true);
+		var list = {};
+		list['act'] = "chkun";
+		list['kval'] = uname;
+		var param = 'param='+JSON.stringify(list);
 		//post请求时才需要下面的代码
-		//xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8"); 
+		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8"); 
 		xmlHttp.onreadystatechange = function () {
 			if(xmlHttp.readyState==4 && xmlHttp.status==200){
 				res = xmlHttp.responseText;
@@ -139,7 +163,7 @@ window.onload = function(){
 				}
 			}
 		}
-		xmlHttp.send();
+		xmlHttp.send(param);
 	}
 	
 	registerctl.addEventListener('click', registerFunc, false);

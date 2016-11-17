@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,13 +10,15 @@
 		<title>Cloud Pan - All Documents</title>
 		<link rel="stylesheet" href="../css/bootstrap.min.css" />
 		<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-		<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-		<link rel="stylesheet" href="../css/main.css" />
-		<script type="text/javascript" src="../js/main2.js"></script>
-		<style type="text/css">
-			
-		</style>
+		<script type="text/javascript" src="../js/utils.js" ></script>
+		<link rel="stylesheet" href="../css/main.css" />		
+		<script type="text/javascript" src="../uploadAdapter/jquery.loadscript.js "></script>
+		<script type="text/javascript" src="../uploadAdapter/jquery.uploadAdapter.js" ></script>
+		<link rel="stylesheet" href="../font/demo.css" />
+		<link rel="stylesheet" href="../font/iconfont.css" />
+		<script type="text/javascript" src="../js/main.js"></script>
 	</head>
 
 	<body style="overflow:scroll;overflow-y:hidden">
@@ -51,18 +52,17 @@
 					<div class="container-fluid">
 						<div class="row-fluid">
 							<div class="span2">
-								<input type="file" id="file" name="upFile" hidden="true" />
 								<input type="button" id="uploadBtn" class="btn btn-block btn-primary" value="Upload File" />
 							</div>
 							<div class="span10">
 								<!--进度条标签-->
-							    <progress value="0" max="100" id="progress" style="height: 20px; width: 100%" hidden="true"></progress>
+							    <!--<progress value="0" max="100" id="progress" style="height: 20px; width: 100%"></progress>-->
 							    <!--div模拟进度条-->
 							    <!-- <div id="progressNumber" style="width: 0%; height: 20px; background-color: Red"></div>-->
 							</div>
 						</div>
 					</div>
-					<div class="container-fluid">
+					<!--<div class="container-fluid">
 						<div class="row-fluid">
 							<div class="span2">
 								<small>全部文件</small>
@@ -71,26 +71,23 @@
 								<small>已全部加载，共xx文件</small>
 							</div>
 						</div>
-					</div>
-					<div class="container-fluid" style="color: gray;">
+					</div>-->
+					<div class="container-fluid">
 						<div class="row-fluid">
-							<div class="span10">
+							<div class="span9">
 								<small>文件名</small>
 							</div>
-							<div class="span1">
+							<div class="span3">
 								<small>大小</small>
-							</div>
-							<div class="span1">
-								<small>修改日期</small>
 							</div>
 						</div>
 					</div>
-					<div class="container-fluid list-row">
-							
+					<div class="container-fluid list-row" id="listdiv"></div>
+					<div id="uploadDiv">
+						<div class="icon" onclick="closepopup()"></div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</body>
-
 </html>
