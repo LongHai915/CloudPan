@@ -1,0 +1,40 @@
+2016-11-16 07:20:03 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:01:48 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:01:50 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:01:55 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:02:40 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:04:59 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:08:14 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:08:29 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:49:40 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:50:48 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:54:07 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 08:56:10 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 09:01:29 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 09:03:11 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 09:03:57 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 09:04:23 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 09:05:08 - Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cloudpan.t_file' doesn't exist
+
+2016-11-16 09:05:46 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 09:07:05 - Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'cloudpan.t_file' doesn't exist
+
+2016-11-16 09:35:10 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:09:36 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:37:27 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:37:55 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:38:29 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:38:47 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:38:49 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:38:51 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:39:06 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:40:29 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:41:24 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:42:25 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:42:50 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:43:29 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:44:59 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:57:13 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:57:13 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:57:38 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
+2016-11-16 10:57:38 - SELECT did, dname from t_directories where did in(select did from t_dir_user where pid=? and uid=?);
