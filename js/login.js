@@ -1,73 +1,58 @@
 window.onload = function(){
-	var xmlHttp;
-	if(window.XMLHttpRequest){
-		//code for IE7+, Firefox, Chrome, Safari, Opera
-		xmlHttp = new XMLHttpRequest();
-	}else{
-		//code for IE6, IE5
-		xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
-	}
+	
 	var islogin=false;
+	var errCtl = document.getElementById('errmsg');
+	var nameCtl = document.getElementById('uName');
+	var passwdCtl = document.getElementById('uPwd');
+	
 	var loginFun = function (event) {
-		var res = null;
-		var errmsg = document.getElementById('errmsg');
-		var name = document.getElementById('uName');
-		var passwd = document.getElementById('uPwd');
-		//var email_pattern = new RegExp('^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$');
-		//var email_pattern = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*\w{1,}$/;
+		//登录验证未完成之前登录的第二次单击事件进行响应
 		if(islogin){
 			return;
 		}
-		if(name.value.trim().length == 0){
-			errmsg.innerText = 'please input user name';
+		
+		var name = nameCtl.value.trim();
+		var passwd = passwdCtl.value.trim();
+		if(name.length == 0){
+			errCtl.innerHTML = "please input your name";
 			return;
 		}
-		//else if(!email_pattern.test(email.value)){
-		//	errmsg.innerText = 'please input valid email address';
-		//	return;
-		//}
-		else if(passwd.value.trim().length == 0){
-			errmsg.innerText = 'please input password';
+		if(passwd.length == 0){
+			errCtl.innerHTML = 'please input your password';
 			return;
 		}
 		islogin = true;
+		
 		var url = 'act/login.php';
 		var list = {};
 		list['act'] = 'login';
-		list['kid'] = name.value.trim();
-		list['kval'] = passwd.value.trim();
+		list['kid'] = name;
+		list['kval'] = passwd;
 		var param = 'param='+JSON.stringify(list);
-		xmlHttp.open('POST', url, true);
-		//post请求时才需要下面的代码
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8"); 
-		xmlHttp.onreadystatechange = function(){
-			if(xmlHttp.readyState==4 && xmlHttp.status==200){
-				res = xmlHttp.responseText;
-				//errmsg.innerText = xmlHttp.responseText;
-				res = eval('('+res+')');
-				if(res['code']===0){
-					errmsg.innerText = res['msg'];
-				}
-				else{
-					document.cookie = "uname="+ escape(name.value.trim());
-					document.cookie = "ukey=" + escape(res['code']);
-					window.location = res['url'];
-					//var date = new Date();
-					//date.setTime(date.getTime() +  10*60*1000);
-					//document.cookie = "uname=" + escape(name.value.trim())+";expires="+date.toGMTString();	
-				}
+		webAJAXquery(url, 'POST', param, onlogincallback);
+	}
+	onlogincallback = function(status, ret){
+		if(ret == null)
+			return;
+		else if(status == 200) {
+			if(ret['code'] == 0){
+				errCtl.innerText = ret['msg'];
+				islogin = false;
+			} else {
+				document.cookie = "uname="+ escape(ret['uname']);
+				document.cookie = "ukey=" + escape(ret['code']);
+				window.location = ret['url'];
 			}
-			else if(xmlHttp.status==404){
-				errmsg.innerText = 'login failed: network problem';
-			}
+		} else if(status==404){
+			errCtl.innerText = 'login failed: network problem';
+			islogin = false;
 		}
-		xmlHttp.send(param);
 	}
 	var registerFun = function (event) {
-		//alert("register function");
 		window.location.href = "register.html";
 	}	
 	document.getElementById('loginBtn').addEventListener('click', loginFun, false);
+	
 	var alist = document.getElementsByTagName('a');
 	var i=0;
 	while(alist[i])

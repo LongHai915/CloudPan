@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="css/bootstrap-responsive.css" />
 		<title>Welcome to Cloud Pan</title>
 		<link rel="stylesheet" href="css/login.css" />
+		<script type="text/javascript" src="js/utils.js"></script>
 		<script type="text/javascript" src="js/register.js" ></script>
 	</head>
 
@@ -17,8 +18,8 @@
 		<div class="container">
 			<form class="form-signin">
 				<label id="errmsg"></label>
-				<input type="text" id="username" class="input-block-level" placeholder="User Name" />
-				<input type="text" id="email" class="input-block-level" placeholder="Email address" />
+				<input type="text" id="username" class="input-block-level" placeholder="User Name" autocomplete="off" />
+				<input type="text" id="email" class="input-block-level" placeholder="Email address"  autocomplete="off"/>
 				<input type="password" id="pwd" class="input-block-level" placeholder="Password" />
 				<input type="password" id="rpwd" class="input-block-level" placeholder="Confirm Password" />
 				<button type="button" id="registerBtn" class="btn btn-block btn-primary">Register</button>

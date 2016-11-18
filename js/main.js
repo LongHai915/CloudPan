@@ -1,13 +1,12 @@
 window.onload = function() {
-	if(!is_valid())
-		window.location = "../index.html";
-	var xmlHttp=null;
-	var url = '../act/upload.php';
-	// if(window.XMLHttpRequest) {
-	// 	xmlHttp = new XMLHttpRequest();
-	// } else {
-	// 	xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
-	// }
+	var key = getValFromCookie('ukey');
+	if(0 == key){
+		window.location = "/cloudpan/index.html";
+		return;
+	} else if (key.length == 0){
+		window.location = "/cloudpan/index.html";
+		return;
+	}
 
 	// 获取当前时间戳(以s为单位)
 	//var timestamp = Date.parse(new Date());
@@ -29,8 +28,8 @@ window.onload = function() {
 		showUploadedSize: true,
 		removeCompleted: true, //上传完成自动删除
 		removeTimeout: 10, //上传完成到删除的间隔时间
-		checkExisting: '../act/check-exists.php',
-		uploader: '../act/upload.php',
+		//checkExisting: '/cloudpan/act/check-exists.php',
+		uploader: '/cloudpan/act/upload.php',
 		onUploadSuccess:function(file, data, response){
 			var list={};
 			list['fname'] = file.name;
@@ -39,32 +38,9 @@ window.onload = function() {
 			var arr = new Array();
 			arr[0] = list;
 			addtofilelist(arr);
-			
-//			var rowDiv = document.createElement('div');
-//			rowDiv.className = "row-fluid";
-//			document.getElementById("listdiv").appendChild(rowDiv);
-//			
-//			var col1 = document.createElement("div");
-//			col1.className = "span9";
-//			col1.innerHTML = "<small>"+fname+"</small>";
-//			rowDiv.appendChild(col1);
-//			var col2 = document.createElement("div");
-//			col2.className = "span1";
-//			col2.innerHTML = "<small>"+fsize+"</small>";
-//			rowDiv.appendChild(col2);
-//			var col3 = document.createElement("div");
-//			col3.className = "span2";
-//			var ah = document.createElement('a');
-//			ah.href = downUrl;
-//			//ah.href = "#";
-//			ah.innerHTML = "<small>Download</small>";
-//			col3.appendChild(ah);
-//			rowDiv.appendChild(col3);
-//			//document.getElementById("listdiv").appendChild(rowDiv);
 		}
 	});
 	
-	//var filectl = document.getElementById("file");
 	var bgDiv = document.createElement('div');
 	var popUp = document.getElementById("uploadDiv");
 	showuploaddialog = function (){		
@@ -109,12 +85,8 @@ window.onload = function() {
 			Alert("network problem, please try to refresh");
 		}
 	}
-//	var jsn = "[{'f':'c', 'size':10},{'f':'c++', 'size':11}]";
-//	alert(eval('(' + jsn + ')'));
-//	return;
 	document.getElementById('uploadBtn').addEventListener('click', showuploaddialog, false);
 	loadDirsAndFiles();
-	//loadFiles();
 }
 
 function closepopup(){
@@ -190,5 +162,4 @@ function loadDirsAndFiles(pid = 0){
 	list['code']=1;
 	var param = 'param='+JSON.stringify(list);
 	webAJAXquery(url, 'POST', param, onloadcallback);
-	
 }

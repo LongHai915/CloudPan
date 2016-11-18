@@ -1,173 +1,138 @@
-window.onload = function(){
-	var cooklst = document.cookie;
-	var cooks = cooklst.split(";");
-	for(var i=0; i<cooks.length; i++){
-		var arr = cooks[i].split('=');
-		if('uname' == arr[0] 
-			&& arr[1].length!=0){
-			window.location = "html/main.html";
-			break;
-		}
-	}
-	
-	var xmlHttp;
-	if(window.XMLHttpRequest){
-		//code for IE7+, Firefox, Chrome, Safari, Opera
-		xmlHttp = new XMLHttpRequest();
-	}else{
-		//code for IE6, IE5
-		xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
-	}
-	
-	var unamectl=document.getElementById('username');	
-	var uemailctl=document.getElementById('email');
-	var rpwdctl=document.getElementById('rpwd');
+window.onload = function() {
+	var unamectl = document.getElementById('username');
+	var uemailctl = document.getElementById('email');
+	var rpwdctl = document.getElementById('rpwd');
 	var pwdctl = document.getElementById("pwd");
-	var registerctl=document.getElementById('registerBtn');
-	
-	var url= 'act/register.php';
-	var uname = null;
-	var pname = null;
-	var uemail = null;
-	var upwd = null;
-	var upwdr = null;
-	var isNmExists = false;
-	var isNmChk = false;
-	var emailChk = function (event){
-		if(isNmExists){
-			unamectl.focus();
-			return false;
-		}
-		uemail = uemailctl.value.trim();
-		var email_pattern = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*\w{1,}$/;
-		if(uemail.length == 0){
-			errmsg.innerText = 'please input email address';
-			uemailctl.focus();
-			return false;
-		}
-		else if(!email_pattern.test(uemail)){
-			errmsg.innerText = 'please input valid email address';
-			uemailctl.focus();
-			return false;
-		}
-		errmsg.innerText="";
-		return true;
-	}
-	
-	var pwdChk = function (event) {
-		if(isNmExists){
-			unamectl.focus();
-			return false;
-		}
-		upwd = pwdctl.value.trim();
-		upwdr = rpwdctl.value.trim();
-		
-		if(upwd.length == 0){
-			errmsg.innerText = 'please input password';
-			passwdctl.focus();
-			return false;
-		}
-		else if(upwdr.length == 0){
-			errmsg.innerText = 'please input password again';
-			rpasswd.focus();
-			return false;
-		}
-		else if(upwd!=upwdr){
-			errmsg.innerText = 'Two password you entered must be same, please re-enter';
-			passwdctl.focus();
-			return false;
-		}
-		errmsg.innerText="";
-		return true;
-	}
-	
-	var registerFunc = function (event) {
-		uname = unamectl.value.trim();
-		var res=""; 
-		if(uname.length == 0){
-			errmsg.innerText = "please input user name";
-			unamectl.focus();
+	var errCtl = document.getElementById("errmsg");
+
+	var url = 'act/register.php';
+	var is_name_valid = false;
+	var is_email_valid = false;
+	var is_pwd_valid = false;
+	var uname = unamectl.value.trim();
+	var pname = unamectl.value.trim();
+	var uemail = uemailctl.value.trim();
+	var upwd = pwdctl.value.trim();
+	var upwdr = rpwdctl.value.trim();
+
+	oncallback = function(status, ret) {
+		if(ret == null)
 			return;
-		}
-		else if(!isNmChk || isNmExists){
-			chkExistsFunc();
-			if(isNmExists){
-				errmsg.innerText = "";
-				unamectl.focus();
-				return;
-			}	
-		}
-		else if(!emailChk())
-			return;
-		else if(!pwdChk())
-			return;
-		
-		xmlHttp.open('POST', url, true);
-		//post请求时才需要下面的代码
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8"); 
-		var list={};
-		list['act'] = 'reg';
-		list['knm'] = uname;
-		list['kem'] = uemail;
-		list['kpw'] = upwd;
-		var param ='param='+JSON.stringify(list);
-		xmlHttp.onreadystatechange = function(){
-			if(xmlHttp.readyState==4 && xmlHttp.status==200){
-				res = xmlHttp.responseText;
-				res = eval('('+res+')');
-				
-				if(res['code']===1){
+		else if(status == 200) {
+			switch(ret['code']) {
+				case 0:
+					errCtl.innerText = ret['msg'];
+					is_name_valid = false;
+					break;
+				case 1:
+					errCtl.innerText = '';
+					is_name_valid = true;
+					pname = ret['msg'];
+					break;
+				case 2:
+					errCtl.innerText = ret['msg'];
+					is_email_valid = false;
+					break;
+				case 3:
+					errCtl.innerText = '';
+					is_email_valid = true;
+					break;
+				case 4:
+					errCtl.innerText = ret['msg'];
+					break;
+				case 5:
 					confirm("please sign in.");
 					window.location = res['url'];
-				}
-				else{
-					errmsg.innerText = res['msg'];
-				}
+					break;
 			}
-			else if(xmlHttp.status==404){
-				errmsg.innerText = 'register failed: network problem';
-			}
+		} else if(status == 404) {
+			errCtl.innerText = 'login failed: network problem';
+			islogin = false;
 		}
-		xmlHttp.send(param);
 	}
-	
-	var chkExistsFunc = function (event) {
-		var uname = unamectl.value.trim();
-		var res="";
-		isNmChk = true;
-		if(uname.length == 0)
+
+	onnamechk = function(event) {
+		var name_pattern = /^[_A-Za-z]+[_A-Za-z0-9]{5,8}$/;
+		uname = unamectl.value.trim();
+		if(uname.length == 0) {
 			return;
-		else if(uname == pname)//no modify, no check
+		}
+		if(!name_pattern.test(uname)) {
+			errCtl.innerHTML = "name must be more than 6, less than 8 characters and start with letters or underscore";
+			is_name_valid = false;
 			return;
-	
-		xmlHttp.open('POST', url, true);
+		}
+
 		var list = {};
-		list['act'] = "chkun";
+		list['act'] = "cnm";
 		list['kval'] = uname;
-		var param = 'param='+JSON.stringify(list);
-		//post请求时才需要下面的代码
-		xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8"); 
-		xmlHttp.onreadystatechange = function () {
-			if(xmlHttp.readyState==4 && xmlHttp.status==200){
-				res = xmlHttp.responseText;
-				res = eval('('+res+')');
-				if(res['code']==0){
-					errmsg.innerText = res['msg'];
-					isNmExists = true;
-					//unamectl.focus();
-					pname = unamectl.value.trim(); //exists then save the input
-				}
-				else if(isNmExists && res['code']!=0){
-					errmsg.innerText = "";
-					isNmExists = false;
-				}
-			}
-		}
-		xmlHttp.send(param);
+		var param = 'param=' + JSON.stringify(list);
+		webAJAXquery(url, 'POST', param, oncallback);
 	}
-	
-	registerctl.addEventListener('click', registerFunc, false);
-	unamectl.addEventListener('blur', chkExistsFunc, false);
-	uemailctl.addEventListener('blur', emailChk, false)
-	rpwdctl.addEventListener('blur', pwdChk, false)
+
+	onemailchk = function(event) {
+		uemail = uemailctl.value.trim();
+		var ret = email_check(uemail);
+		if(uemail.length == 0)
+			return;
+		if(0 == ret['code']) {
+			errCtl.innerText = ret['msg'];
+			is_email_valid = false;
+			return;
+		}
+
+		var list = {};
+		list['act'] = "cem";
+		list['kval'] = uemail;
+		var param = 'param=' + JSON.stringify(list);
+		webAJAXquery(url, 'POST', param, oncallback);
+	}
+
+	onpasswordchk = function(event) {
+		upwd = pwdctl.value.trim();
+		if(upwd.length == 0)
+			return;
+		var ret = password_check(upwd);
+		if(0 == ret['code']) {
+			errCtl.innerText = ret['msg'];
+			is_pwd_valid = false;
+		} else {
+			is_pwd_valid = true;
+			errmsg.innerText = '';
+		}
+	}
+
+	var registerFunc = function(event) {
+		upwdr = rpwdctl.value.trim();
+		if(uname.length == 0) {
+			errCtl.innerText = "please input name";
+		} else if(!is_name_valid) {
+			errmsg.innerText = 'the name you input is invalid';
+		} else if(uemail.length == 0) {
+			errCtl.innerText = "please input email";
+		} else if(!is_email_valid) {
+			errmsg.innerText = 'the email you input is invalid';
+		} else if(upwd.length == 0) {
+			errCtl.innerText = "please input password";
+		} else if(!is_pwd_valid) {
+			errmsg.innerText = 'the password you input is invalid';
+		} else if(upwdr.length == 0){
+			errmsg.innerText = 'please input the confirm password';
+		} else if(upwd != upwdr){
+			errmsg.innerText = 'Two password you entered must be same, please re-enter';
+		} else {
+			var list = {};
+			list['act'] = 'reg';
+			list['knm'] = uname;
+			list['kem'] = uemail;
+			list['kpw'] = upwd;
+			var param = 'param=' + JSON.stringify(list);
+			webAJAXquery(url, 'POST', param, oncallback);
+		}
+	}
+
+	unamectl.addEventListener('blur', onnamechk, false);
+	uemailctl.addEventListener('blur', onemailchk, false);
+	pwdctl.addEventListener('blur', onpasswordchk, false);
+	document.getElementById('registerBtn').addEventListener('click', registerFunc, false);
 }
