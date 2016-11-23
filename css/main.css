@@ -93,9 +93,13 @@ div.mainDiv> .container-fluid> .row-fluid {
 	line-height: 30px;
 }
 
-#uploadDiv {
-	position: absolute;
+/*#uploadDiv {
+	
+}*/
+
+div.showPub{
 	visibility: hidden;
+	position: absolute;
 	overflow: hidden;
 	border: 1px solid #CCC;
 	background-color: darkgrey;
@@ -106,7 +110,7 @@ div.mainDiv> .container-fluid> .row-fluid {
 	border-radius: 10px;
 }
 
-div.icon {
+div.showPub > a.icon {
 	background: url(../img/glyphicons-halflings-white.png);
 	background-repeat: no-repeat;
 	background-position: -456px -145px;
@@ -114,10 +118,17 @@ div.icon {
 	width: 14px;
 	float: right;
 	cursor: pointer;
+	margin-top: 2px !important;
 }
 
-div.icon:hover {
+div.showPub > a.icon:hover {
 	background: url(../img/glyphicons-halflings.png);
 	background-repeat: no-repeat;
 	background-position: -456px -145px;
+}
+
+div.showPub > input[type="checkbox"]
+{ 
+	margin-top: -2px !important;
+	margin-left:300px !important;
 }

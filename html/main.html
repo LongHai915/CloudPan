@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,10 +13,10 @@
 		<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 		<script type="text/javascript" src="../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../js/utils.js" ></script>
-		<link rel="stylesheet" href="../css/main.css" />		
-		<script type="text/javascript" src="../uploadAdapter/jquery.loadscript.js "></script>
-		<script type="text/javascript" src="../uploadAdapter/jquery.uploadAdapter.js" ></script>
+		<script type="text/javascript" src="../js/utils.js"></script>
+		<link rel="stylesheet" href="../css/main.css" />
+		<link rel="stylesheet" type="text/css" href="../uploadify/uploadify.css">
+		<script type="text/javascript" src="../uploadify/jquery.uploadify.min.js"></script>
 		<link rel="stylesheet" href="../font/demo.css" />
 		<link rel="stylesheet" href="../font/iconfont.css" />
 		<script type="text/javascript" src="../js/main.js"></script>
@@ -37,16 +38,22 @@
 		<div class="container">
 			<div class="row">
 				<div class="span3">
-					<div class="fmenu"><a href="#">全部文件</a></div>
-					<ul class="fmenu"> 
-						<li><a href="#">文档</a></li>
-						<li><a href="#">图片</a></li>
-						<li><a href="#">视频</a></li>
+					<div class="fmenu">
+						<a href="#">全部文件</a>
+					</div>
+					<ul class="fmenu">
+						<li>
+							<a href="javascript:loadPubFiles(1);">公有</a>
+						</li>
+						<li>
+							<a href="javascript:loadPriFiles(0, 1);">私有</a>
+						</li>
+						<!--<li><a href="#">视频</a></li>
 						<li><a href="#">音乐</a></li>
-						<li><a href="#">其他</a></li>
+						<li><a href="#">其他</a></li>-->
 					</ul>
-					<div class="fmenu"><a href="#">我的分享</a></div>
-					<div class="fmenu"><a href="#">回收站</a></div>
+					<!--<div class="fmenu"><a href="#">我的分享</a></div>
+					<div class="fmenu"><a href="#">回收站</a></div>-->
 				</div>
 				<div class="mainDiv">
 					<div class="container-fluid">
@@ -56,9 +63,9 @@
 							</div>
 							<div class="span10">
 								<!--进度条标签-->
-							    <!--<progress value="0" max="100" id="progress" style="height: 20px; width: 100%"></progress>-->
-							    <!--div模拟进度条-->
-							    <!-- <div id="progressNumber" style="width: 0%; height: 20px; background-color: Red"></div>-->
+								<!--<progress value="0" max="100" id="progress" style="height: 20px; width: 100%"></progress>-->
+								<!--div模拟进度条-->
+								<!-- <div id="progressNumber" style="width: 0%; height: 20px; background-color: Red"></div>-->
 							</div>
 						</div>
 					</div>
@@ -77,17 +84,25 @@
 							<div class="span9">
 								<small>文件名</small>
 							</div>
-							<div class="span3">
+							<div class="span1">
 								<small>大小</small>
+							</div>
+							<div class="span2">
+								<small>公有/私有</small>
 							</div>
 						</div>
 					</div>
 					<div class="container-fluid list-row" id="listdiv"></div>
-					<div id="uploadDiv">
-						<div class="icon" onclick="closepopup()"></div>
+					<div id="showPub" class="showPub">
+						<input type="checkbox" id="bPublic" checked="checked" value="1" title="upload to public path">
+						<small style="font-weight: bold;">PUBLIC</small>
+						<a href="javascript:closepopup();" class="icon"></a>
+						<div id="uploadDiv">
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</body>
+
 </html>

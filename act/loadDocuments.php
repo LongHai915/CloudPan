@@ -18,6 +18,8 @@ if($code == 0)
 	loadDirectories($uid, $dircode);
 else if($code == 1)
 	loadFiles($uid, $dircode);
+else if($code == 2)
+	loadPubFiles();
 
 function loadDirectories($uid, $dircode)
 {
@@ -26,6 +28,7 @@ function loadDirectories($uid, $dircode)
 	$link = new mysql($dbinfo);
 	$param = array($dircode, $uid);
 	$data = $link->getAll($sql, $param);
+	$data['type']='0';
 	echo json_encode($data);
 }
 
@@ -36,7 +39,19 @@ function loadFiles($uid, $dircode)
 	$link = new mysql($dbinfo);
 	$param = array($dircode, $uid);
 	$data = $link->getAll($sql, $param);
+	$data['type']='1';
 	
+	echo json_encode($data);
+}
+
+function loadPubFiles()
+{
+	$sql = "SELECT fname, fsize from t_pub_files;";
+	$dbinfo = array('host'=>db_host, 'port'=>db_port, 'user'=>db_user, 'password'=>db_pass, 'dbname'=>db_name);
+	$link = new mysql($dbinfo);
+	$param = array();
+	$data = $link->getAll($sql, $param);
+	$data['type']='2';
 	echo json_encode($data);
 }
 

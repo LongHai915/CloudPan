@@ -13,7 +13,6 @@ if (isset($_SESSION['uid'])) {
     $ret['msg']  = 'no login';
     $ret['url']  = "../index.html";
     echo json_encode($ret);
-
     return;
 }
 
@@ -25,7 +24,7 @@ if (isset($_FILES["ufile"])) {
     if (!file_exists($uploadDir)) {
         mkdir($uploadDir);
     }
-
+    $bpublic = $_REQUEST['key'];
     // $tmp_name = $_FILES['ufile']['name'];
     // var_dump($tmp_name);
     //sha1_file 中文名称不行
@@ -48,7 +47,9 @@ if (isset($_FILES["ufile"])) {
                 $ret['url']  = '';
             } else {
                 $ret['code'] = 1;
-                $ret['msg']  = 'success';
+                $ret['msg']  = '2';
+                if($bpublic == "0")
+                    $ret['msg'] = '1';
                 $ret['url']  = upload_dir . DIRECTORY_SEPARATOR . $ufile['name']; //utf8编码
                 //insert the file info into database
                 InsertDatabase($ufile['name'], $ufile['size']);
@@ -56,7 +57,9 @@ if (isset($_FILES["ufile"])) {
         } else {
             InsertDatabase($ufile['name'], $ufile['size']);
             $ret['code'] = 1;
-            $ret['msg']  = 'success';
+            $ret['msg']  = '2';
+            if($bpublic == "0")
+                $ret['msg'] = '1';
             $ret['url']  = upload_dir . DIRECTORY_SEPARATOR . $ufile['name']; //utf8编码
         }
 
@@ -105,25 +108,34 @@ function InsertDatabase($fname, $fsize, $did=1)
         $dbinfo = array('host'=>db_host, 'port'=>db_port, 'user'=>db_user, 'password'=>db_pass, 'dbname'=>db_name);
         $link = new mysql($dbinfo);
 
-        $sql = "insert into t_files(fname, fsize) values(?, ?);";        
-        $size = round($_FILES['ufile']['size'] / 1024);
-        $param = array($_FILES['ufile']['name'], $size);
-        $link->beginTransaction();
-        $res   = $link->insert($sql, $param);
-        if (!$res) {
-            $link->rollback();
+        if($bpublic == "false")
+        {
+             $sql = "insert into t_files(fname, fsize) values(?, ?);";              
+            $size = round($_FILES['ufile']['size'] / 1024);
+            $param = array($_FILES['ufile']['name'], $size);
+            $link->beginTransaction();
+            $res   = $link->insert($sql, $param);
+            if (!$res) {
+                $link->rollback();
+            }
+            $fid = $res;
+            $sql  = "insert into t_file_dir_user(fid, did, uid) values(?, ?, ?)";
+            session_start();
+            $uid   = $_SESSION['uid'];
+            $did = $did == 0 ? 1 : $did;
+            $param = array($fid, $did, $uid);
+            $res   = $link->insert($sql, $param);
+            if (!$res) {
+                $link->rollback();
+            }
+            $link->commit();
+        } else {
+            $sql = "insert into t_pub_files(fname, fsize) values(?, ?);";              
+            $size = round($_FILES['ufile']['size'] / 1024);
+            $param = array($_FILES['ufile']['name'], $size);
+            $link->insert($sql, $param);
         }
-        $fid = $res;
-        $sql  = "insert into t_file_dir_user(fid, did, uid) values(?, ?, ?)";
-        session_start();
-        $uid   = $_SESSION['uid'];
-        $did = $did == 0 ? 1 : $did;
-        $param = array($fid, $did, $uid);
-        $res   = $link->insert($sql, $param);
-        if (!$res) {
-            $link->rollback();
-        }
-        $link->commit();
+       
     } catch (PDOException $e) {
         $link->rollback();
     }

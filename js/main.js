@@ -8,47 +8,61 @@ window.onload = function() {
 		return;
 	}
 
+	var bPub = 0;
 	// 获取当前时间戳(以s为单位)
 	//var timestamp = Date.parse(new Date());
 	//timestamp = timestamp / 1000;
-	$('#uploadDiv').uploadAdapter({
+	$('#uploadDiv').uploadify({
 		auto: true,
 		buttonText: 'SELECT FILE',
 		fileObjName: 'ufile',
 		fileTypeExts: '*.pdf;*cpp',
 		method: "POST",
 		multi: true,
-		formData: {
-			key: 'adgjl',
-			key2: '156347'
-		},
-		swf:'../uploadAdapter/uploadify.swf',
+//		formData: {
+//			key: bPub
+//		},
+		swf:'../uploadify/uploadify.swf',
 		fileSizeLimit: 1024000,
 		showUploadedPercent: true, //是否实时显示上传的百分比，如20%
 		showUploadedSize: true,
 		removeCompleted: true, //上传完成自动删除
-		removeTimeout: 10, //上传完成到删除的间隔时间
+		removeTimeout: 5, //上传完成到删除的间隔时间
 		//checkExisting: '/cloudpan/act/check-exists.php',
 		uploader: '/cloudpan/act/upload.php',
+		onUploadStart:function(file){
+			console.log("on upload start.");
+			var param={};
+			param['key'] = document.getElementById("bPublic").checked ? 1 : 0;
+			$('#uploadDiv').uploadify("settings", "formData", param);
+		},
 		onUploadSuccess:function(file, data, response){
+			console.log("on upload complete.");
 			var list={};
 			list['fname'] = file.name;
 			var size = file.size / 1024;			
 			list['fsize'] = size;
 			var arr = new Array();
 			arr[0] = list;
+			arr['count'] = 1;
+			data = eval('(' + data + ')');
+			arr['type'] = data['msg'];
 			addtofilelist(arr);
+		},
+		onUploadError(file, errorCode, errorMsg, errorString)	
+		{
+			console.log("on upload error: " + errorMsg);
 		}
 	});
 	
 	var bgDiv = document.createElement('div');
-	var popUp = document.getElementById("uploadDiv");
+	var popUp = document.getElementById("showPub");
 	showuploaddialog = function (){		
 		popUp.style.top = "100px";
 		var bwid = document.body.clientWidth;
 		var vleft = (bwid - 620)/2;
 		popUp.style.left = vleft + "px";
-		popUp.style.width = "620px";
+		popUp.style.width = "420px";
 		popUp.style.minHeight = "50px";
 		popUp.style.height = "auto";
 		popUp.style.visibility = "visible";
@@ -70,6 +84,8 @@ window.onload = function() {
 		bgDiv.style.display="block";
 		document.body.appendChild(bgDiv);
 		document.body.style.overflow = "hidden"; //取消滚动条
+		
+		//默认存储为公共文件
 	}
 	
 	onloadcallback = function(status, ret){
@@ -86,25 +102,34 @@ window.onload = function() {
 		}
 	}
 	document.getElementById('uploadBtn').addEventListener('click', showuploaddialog, false);
-	loadDirsAndFiles();
+//	document.getElementById('bPublic').addEventListener('click', changefileflag, false);
+	loadDirsAndFiles(0);
 }
 
 function closepopup(){
-	var popUp = document.getElementById("uploadDiv");
+	var popUp = document.getElementById("showPub");
 	popUp.style.visibility = "hidden";
 	var bgdiv = document.getElementById('bgDiv');
 	document.body.removeChild(bgdiv);
 }
 
 function addtofilelist(data){
-	var len = data.length;
+	var len = data['count'];
 	var divObj = document.getElementById("listdiv");
 	
 	//check whether the file is directory or not
 	var is_dir = false;
-	if(len > 0 
-		&& data[0]['fsize']==null)
+	var is_private = false;
+//	if(len > 0 
+//		&& data[0]['fsize']==null)
+//		is_dir = true;
+	if(data['type']=='0'){
 		is_dir = true;
+		is_private = true;
+	}
+		
+	if(data['type']=='1')
+		is_private = true;
 		
 	for(var i=0; i<len; i++){
 		var sp = document.createElement("span");
@@ -116,7 +141,7 @@ function addtofilelist(data){
 		var anm = document.createElement("a");
 		if(is_dir){
 			anm.innerHTML = '&nbsp'+data[i]['dname'];
-			anm.href = "javascript:loadDirsAndFiles("+data[0]['did']+");";
+			anm.href = "javascript:loadPriFiles("+data[0]['did']+", 1);";
 		} else {
 			anm.innerHTML = '&nbsp'+data[i]['fname'];
 			anm.href = "/cloudpan/files/"+data[i]['fname'];
@@ -129,10 +154,10 @@ function addtofilelist(data){
 		var row = document.createElement('div');
 		row.className = 'row-fluid';
 		row.style.borderTop = '1px solid white';
-		var span3 = document.createElement("div");
-		span3.className = 'span1';
+		var span1 = document.createElement("div");
+		span1.className = 'span1';
 		if(is_dir) {
-			span3.innerHTML = '-';
+			span1.innerHTML = '-';
 		} else {
 			var size = data[i]['fsize'];
 			if(size > 1024){
@@ -141,25 +166,56 @@ function addtofilelist(data){
 			}else{
 				size = '<small>' + size + 'KB</small>';
 			}
-			span3.innerHTML = size;
+			span1.innerHTML = size;
 		}
+		var span2 = document.createElement("div");
+		span2.className="span2";
+		span2.innerHTML="<i>PUB</i>";
+		if(is_private)
+			span2.innerHTML="<b>PRI</b>";
 		row.appendChild(span9);
-		row.appendChild(span3);
+		row.appendChild(span1);
+		row.appendChild(span2);
 		divObj.appendChild(row);
 	}
 }
 
-function loadDirsAndFiles(pid = 0){
+function loadDirsAndFiles(pid){
+	
+	loadPubFiles(0);
+	loadPriFiles(pid, 0);
+}
+
+function loadPriFiles(pid, type)
+{
+	if(type == 1){
+		document.getElementById("listdiv").innerHTML = "";
+	}
 	var url = '../act/loadDocuments.php';
 	var list={};
 	list['pid']=pid;
 	list['uid']=getValFromCookie('ukey');
-	//load directories
+	//directories
 	list['code']=0;
 	var param = 'param='+JSON.stringify(list);
 	webAJAXquery(url, 'POST', param, onloadcallback);
-	//load files
+	
+	//private files
 	list['code']=1;
+	var param = 'param='+JSON.stringify(list);
+	webAJAXquery(url, 'POST', param, onloadcallback);
+}
+
+function loadPubFiles (type) {
+	if(type == 1){
+		document.getElementById("listdiv").innerHTML = "";
+	}
+	var url = '../act/loadDocuments.php';
+	var list={};
+	list['pid']=0;
+	list['uid']=getValFromCookie('ukey');
+	// public files
+	list['code']=2;
 	var param = 'param='+JSON.stringify(list);
 	webAJAXquery(url, 'POST', param, onloadcallback);
 }

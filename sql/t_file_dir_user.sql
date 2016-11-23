@@ -8,4 +8,4 @@ PRIMARY KEY(id),
 FOREIGN KEY(fid) REFERENCES t_files(fid),
 FOREIGN KEY(did) REFERENCES t_directories(did),
 FOREIGN KEY(uid) REFERENCES t_users(uid)
-)ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+)CHARSET=utf8 COLLATE=utf8_general_ci;

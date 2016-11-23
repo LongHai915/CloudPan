@@ -8,7 +8,7 @@ create table users(
 	lastLoginTim TIMESTAMP not null DEFAULT '0000-00-00 00:00:00',
 	PRIMARY KEY(uid),
 	UNIQUE KEY name USING BTREE(name)
-)ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+)DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 alter table users rename t_users;
 

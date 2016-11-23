@@ -132,12 +132,14 @@ class mysql
      */
     public function getAll($sql, $param = array())
     {
+        $count=0;
         $res = $this->query($sql, $param);
         if ($res) {
             while ($row = $this->stmt->fetch(PDO::FETCH_ASSOC)) {
+                $count = $count + 1;
                 $data[] = $row;
             }
-
+            $data['count'] = $count;
             return $data;
         } else {
             return false;

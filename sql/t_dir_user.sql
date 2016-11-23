@@ -6,4 +6,4 @@ uid int(11) not null,
 PRIMARY KEY(id),
 FOREIGN KEY(did) REFERENCES t_directories(did),
 FOREIGN KEY(uid) REFERENCES t_users(uid)
-)ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+)CHARSET=utf8 COLLATE=utf8_general_ci;

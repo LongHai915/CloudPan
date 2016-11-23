@@ -7,4 +7,4 @@ ftime TIMESTAMP not null default '0000-00-00 00:00:00',
 PRIMARY KEY(id),
 FOREIGN KEY(fid) REFERENCES t_files(fid),
 FOREIGN KEY(uid) REFERENCES t_users(uid)
-)ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+)CHARSET=utf8 COLLATE=utf8_general_ci;
